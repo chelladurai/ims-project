@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -ex
+
+VERSION=$(node -p "require('./package.json').version")
+CHANNEL=$(./scripts/_vars/channel)
+
+# trigger a macos installer by committing and tagging to the repo
+
+git clone --recurse-submodules git@github.com:heroku/cli-macos-installer.git tmp/cli-macos-installer
+cd tmp/cli-macos-installer
+(
+  cd cli
+  git checkout "$CIRCLE_SHA1"
+)
+git add cli
+
+if [[ ${CHANNEL} != "stable" ]]; then
+  echo "not on stable, skipping macos-installer trigger"
+  exit
+fi
+
+git commit -m "heroku $VERSION"
+git tag "v$VERSION"
+git push --tags
+
+git push origin master

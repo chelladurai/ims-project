@@ -1,0 +1,17 @@
+name: heroku
+version: git
+summary: Heroku CLI
+description: Heroku CLI
+grade: stable
+confinement: classic
+
+apps:
+  heroku:
+    command: bin/heroku
+
+parts:
+  heroku:
+    source: .
+    plugin: nodejs
+    node-engine: 9.2.0
+    node-package-manager: yarn
